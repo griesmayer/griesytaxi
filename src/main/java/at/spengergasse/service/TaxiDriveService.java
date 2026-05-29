@@ -13,6 +13,7 @@ public class TaxiDriveService {
 
     public TaxiDriveService() {
         taxiDrives = new ArrayList<>(1000);
+        fillTestData();
     }
 
     public void fillTestData() {
@@ -48,6 +49,12 @@ public class TaxiDriveService {
         taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 2, 1),  "Kraus",      "VAN",     47.30, 7, true));
         taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 2, 2),  "Jäger",      "Small",   11.70, 1, false));
         taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 2, 3),  "Graf",       "Regular", 29.50, 4, true));
+    }
+
+    public ArrayList<TaxiDrive> findAll() {
+        ArrayList<TaxiDrive> clone;
+        clone = new ArrayList<>(taxiDrives);
+        return clone;
     }
 
     @Override

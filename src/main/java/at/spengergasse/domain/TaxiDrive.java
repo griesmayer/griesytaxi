@@ -29,13 +29,6 @@ public class TaxiDrive {
     private static final String[] taxiTypes = {"Small", "Medium", "Regular", "VAN"};
 
     public TaxiDrive() {
-        setTaxiDriveId();
-        setTaxiDriveDate(LocalDate.now());
-        setCustomerName("Unkn");
-        setTaxiType("Regular");
-        setPrice(10.0);
-        setNumberPassangers(2);
-        setNightDrive(false);
     }
 
     public TaxiDrive(LocalDate taxiDriveDate, String customerName, String taxiType, Double price, Integer numberPassangers, Boolean nightDrive) {
