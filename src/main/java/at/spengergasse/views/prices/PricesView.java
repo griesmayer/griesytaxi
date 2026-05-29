@@ -1,9 +1,13 @@
 package at.spengergasse.views.prices;
 
+import at.spengergasse.views.home.HomeView;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -19,53 +23,48 @@ public class PricesView extends VerticalLayout {
     public PricesView() {
         setSpacing(false);
 
-        H1 company = new H1("Griesy Taxi");
-        company.getStyle()
-                .set("font-family", "cursive")
-                .set("font-size", "6rem")
-                .set("margin", "0");
-
-        H2 subName = new H2("... the best taxi in town ...");
-        subName.getStyle()
-                .set("margin", "0")
-                .set("color", "gray");
+        VerticalLayout header = HomeView.getHeader();
 
         H2 pricelist = new H2("Price List");
         pricelist.getStyle()
                 .set("margin", "0")
                 .set("color", "gray");
 
-        H2 district1 = new H2("1050 Wien");
-        Paragraph priceDay1 = new Paragraph("Preis KM Tag: 1.20€");
-        Paragraph priceNight1 = new Paragraph("Preis KM Nacht: 1.70€");
-        Paragraph priceEnter1 = new Paragraph("Zusätzlich kommen noch 3.00€ für die Bestellung dazu!");
+        FlexLayout districts = new FlexLayout();
+        VerticalLayout district1 = getCard("1050 Wien", 1.2, 1.7, 3.0);
+        VerticalLayout district2 = getCard("1030 Wien", 1.4, 1.9, 3.0);
+        VerticalLayout district3 = getCard("1080 Wien", 2.2, 2.7, 2.0);
+        VerticalLayout district4 = getCard("1010 Wien", 2.9, 4.0, 5.0);
+        VerticalLayout district5 = getCard("Rest Wien", 2.0, 2.4, 3.0);
+        districts.setWidthFull();
+        districts.setJustifyContentMode(JustifyContentMode.CENTER);
+        districts.setFlexWrap(FlexLayout.FlexWrap.WRAP);
+        districts.add(district1, district2, district3, district4, district5);
 
-        H2 district2 = new H2("1030 Wien");
-        Paragraph priceDay2 = new Paragraph("Preis KM Tag: 1.40€");
-        Paragraph priceNight2 = new Paragraph("Preis KM Nacht: 1.90€");
-        Paragraph priceEnter2 = new Paragraph("Zusätzlich kommen noch 3.00€ für die Bestellung dazu!");
+        Paragraph info = new Paragraph("Inklusive Steuer.");
 
-        H2 district3 = new H2("1080 Wien");
-        Paragraph priceDay3 = new Paragraph("Preis KM Tag: 2.20€");
-        Paragraph priceNight3 = new Paragraph("Preis KM Nacht: 2.70€");
-        Paragraph priceEnter3 = new Paragraph("Zusätzlich kommen noch 2.00€ für die Bestellung dazu!");
+        add(header, pricelist,
+                districts,
+                info);
+    }
 
-        H2 district4 = new H2("1010 Wien");
-        Paragraph priceDay4 = new Paragraph("Preis KM Tag: 2.90€");
-        Paragraph priceNight4 = new Paragraph("Preis KM Nacht: 4.00€");
-        Paragraph priceEnter4 = new Paragraph("Zusätzlich kommen noch 5.00€ für die Bestellung dazu!");
+    public VerticalLayout getCard(String districtName, double priceDay, double priceNight, double priceOrder) {
+        VerticalLayout district = new VerticalLayout();
+        H2 districtNameH2 = new H2(districtName);
+        Paragraph priceDayP = new Paragraph("Preis KM Tag: " + priceDay + "€");
+        Paragraph priceNightP = new Paragraph("Preis KM Nacht: " + priceNight + "€");
+        Paragraph priceEnterP = new Paragraph("Zusätzlich kommen noch " + priceOrder + "€ für die Bestellung dazu!");
 
-        H2 district5 = new H2("Rest Wien");
-        Paragraph priceDay5 = new Paragraph("Preis KM Tag: 2.00€");
-        Paragraph priceNight5 = new Paragraph("Preis KM Nacht: 2.40€");
-        Paragraph priceEnter5 = new Paragraph("Zusätzlich kommen noch 3.00€ für die Bestellung dazu!");
+        district.setWidth("350px");
+        district.setPadding(true);
+        district.setSpacing(false);
+        district.getStyle()
+                .set("border", "1px solid lightgray")
+                .set("border-radius", "10px")
+                .set("margin", "10px");
+        district.add(districtNameH2, priceDayP, priceNightP, priceEnterP);
 
-        add(company, subName, pricelist,
-                district1, priceDay1, priceNight1, priceEnter1,
-                district2, priceDay2, priceNight2, priceEnter2,
-                district3, priceDay3, priceNight3, priceEnter3,
-                district4, priceDay4, priceNight4, priceEnter4,
-                district5, priceDay5, priceNight5, priceEnter5);
+        return district;
     }
 
 }

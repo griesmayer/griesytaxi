@@ -22,29 +22,21 @@ public class HomeView extends VerticalLayout {
 
     public HomeView() {
         setSpacing(false);
-
         setAlignItems(Alignment.CENTER);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        H1 company = new H1("Griesy Taxi");
-        company.getStyle()
-                .set("font-family", "cursive")
-                .set("font-size", "6rem")
-                .set("margin", "0");
+        VerticalLayout header = getHeader();
 
-        H2 subName = new H2("... the best taxi in town ...");
-        subName.getStyle()
-                .set("margin", "0")
-                .set("color", "gray");
-
+        HorizontalLayout logoText = new HorizontalLayout();
         Image logo = new Image("images/logo.png", "Griesy Taxi Logo");
         logo.setWidth("800px");
-
         Paragraph line1 = new Paragraph("Griesy Taxi steht für zuverlässigen, komfortablen und pünktlichen Fahrservice. Unser Unternehmen bietet sichere und angenehme Fahrten für Privatpersonen, Geschäftsreisende und Touristen. Egal ob kurze Strecken innerhalb der Stadt oder längere Fahrten – bei Griesy Taxi stehen Kundenzufriedenheit, Freundlichkeit und Professionalität immer an erster Stelle.");
         line1.setWidth("500px");
         line1.getStyle()
                 .set("font-size", "22px")
                 .set("line-height", "1.6")
                 .set("text-align", "left");
+        logoText.add(logo, line1);
 
         Paragraph line2 = new Paragraph("Mit modernen Fahrzeugen und erfahrenen Fahrern sorgt Griesy Taxi für eine entspannte und stressfreie Mobilität. Wir legen großen Wert auf Sauberkeit, Sicherheit und einen erstklassigen Service. Unsere Kunden profitieren von flexiblen Fahrzeiten, fairen Preisen und einer unkomplizierten Buchung. ");
         line2.setWidth("500px");
@@ -60,11 +52,34 @@ public class HomeView extends VerticalLayout {
                 .set("line-height", "1.6")
                 .set("text-align", "left");
 
+        HorizontalLayout address = new HorizontalLayout();
         H3 name = new H3("Griesy Taxi GmbH");
         H3 street = new H3("Spengergasse 20");
         H3 city = new H3("1050 Wien");
+        address.add(name, street, city);
 
-        add(company, subName, logo, line1, line2, line3, name, street, city);
+        add(header, logoText, line2, line3, address);
+    }
+
+    public static VerticalLayout getHeader() {
+        VerticalLayout header;
+
+        header = new VerticalLayout();
+
+        H1 company = new H1("Griesy Taxi");
+        company.getStyle()
+                .set("font-family", "cursive")
+                .set("font-size", "6rem")
+                .set("margin", "0");
+
+        H2 subName = new H2("... the best taxi in town ...");
+        subName.getStyle()
+                .set("margin", "0")
+                .set("color", "gray");
+
+        header.add(company, subName);
+
+        return header;
     }
 
 }
