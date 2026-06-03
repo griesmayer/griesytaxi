@@ -69,6 +69,58 @@ public class TaxiDrive {
         this.taxiType = taxiType;
     }
 
+    public Long getTaxiDriveId() {
+        return taxiDriveId;
+    }
+
+    public void setTaxiDriveId(Long taxiDriveId) {
+        this.taxiDriveId = taxiDriveId;
+    }
+
+    public LocalDate getTaxiDriveDate() {
+        return taxiDriveDate;
+    }
+
+    public void setTaxiDriveDate(LocalDate taxiDriveDate) {
+        this.taxiDriveDate = taxiDriveDate;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getTaxiType() {
+        return taxiType;
+    }
+
+    public void setTaxiType(String taxiType) {
+        this.taxiType = taxiType;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public Integer getNumberPassangers() {
+        return numberPassangers;
+    }
+
+    public void setNumberPassangers(Integer numberPassangers) {
+        this.numberPassangers = numberPassangers;
+    }
+
+    public Boolean getNightDrive() {
+        return nightDrive;
+    }
+
+    public void setNightDrive(Boolean nightDrive) {
+        this.nightDrive = nightDrive;
+    }
+
     @Override
     public TaxiDrive clone() {
         return new TaxiDrive(taxiDriveId, taxiDriveDate, customerName, taxiType, price, numberPassangers, nightDrive);

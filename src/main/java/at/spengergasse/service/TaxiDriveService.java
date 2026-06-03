@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,6 +66,42 @@ public class TaxiDriveService {
             erg += t.toString() + "\n";
         }
         return erg;
+    }
+
+    public void removeAllDrives() {
+        taxiDrives.clear();
+    }
+
+    public void add10Drives() {
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 5),  "Mayer",      "Small",   12.50, 1, false));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 6),  "Huber",      "Medium",  18.00, 2, false));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 7),  "Gruber",     "Regular", 25.30, 3, true));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 8),  "Wagner",     "VAN",     40.00, 6, false));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 9),  "Bauer",      "Small",    9.80, 1, false));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 10), "Hofer",      "Medium",  16.40, 2, true));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 11), "Eder",       "Regular", 22.10, 4, false));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 12), "Schmid",     "VAN",     35.70, 5, true));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 13), "Pichler",    "Small",   11.20, 1, false));
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 14), "Leitner",    "Medium",  19.90, 2, false));
+    }
+
+    public void add1Euro() {
+        for (TaxiDrive t : taxiDrives) {
+            t.setPrice(t.getPrice() + 1);
+        }
+    }
+
+    public void removeAllNightDrives() {
+        Iterator<TaxiDrive> it;
+        TaxiDrive t;
+
+        it = taxiDrives.iterator();
+        while (it.hasNext()) {
+            t = it.next();
+            if (t.getNightDrive() == true) {
+                it.remove();
+            }
+        }
     }
 
     /*
