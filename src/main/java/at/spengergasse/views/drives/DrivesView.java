@@ -1,6 +1,7 @@
 package at.spengergasse.views.drives;
 
 import at.spengergasse.domain.TaxiDrive;
+import at.spengergasse.domain.TaxiDriveException;
 import at.spengergasse.service.TaxiDriveService;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -9,6 +10,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
@@ -26,6 +28,7 @@ public class DrivesView extends VerticalLayout {
     private final Button buttonAdd10Drives = new Button("Add 10 drives");
     private final Button buttonAdd1Euro = new Button("Add 1 EUR");
     private final Button buttonRemoveAllNightDrives = new Button("Remove night drives");
+    private final Button buttonAddWrong = new Button("Add WRONG");
     private final Grid<TaxiDrive> grid = new Grid<>(TaxiDrive.class, true);
     private final TaxiDriveService taxiDriveService;
 
@@ -37,37 +40,72 @@ public class DrivesView extends VerticalLayout {
         grid.setSizeFull();
 
         buttonRemoveAllDrives.addClickListener(event -> removeAllDrives());
-        buttonAdd10Drives.addClickListener( event -> add10Drives());
-        buttonAdd1Euro.addClickListener( event -> add1Euro());
+        buttonAdd10Drives.addClickListener(event -> add10Drives());
+        buttonAdd1Euro.addClickListener(event -> add1Euro());
         buttonRemoveAllNightDrives.addClickListener(event -> removeAllNightDrives());
-        add(new HorizontalLayout(buttonRemoveAllDrives, buttonAdd10Drives, buttonAdd1Euro, buttonRemoveAllNightDrives));
+        buttonAddWrong.addClickListener(event -> addWrongDrive());
+        add(new HorizontalLayout(buttonRemoveAllDrives, buttonAdd10Drives, buttonAdd1Euro, buttonRemoveAllNightDrives, buttonAddWrong));
 
         add(grid);
         reload();
     }
 
+    private void addWrongDrive() {
+        try {
+            taxiDriveService.addWrongDrive();
+            reload();
+        }
+        catch (TaxiDriveException e) {
+            Notification.show(e.getMessage());
+            reload();
+        }
+    }
+
     private void removeAllNightDrives() {
-        taxiDriveService.removeAllNightDrives();
-        reload();
+        try {
+            taxiDriveService.removeAllNightDrives();
+            reload();
+        }
+        catch (TaxiDriveException e) {
+            Notification.show(e.getMessage());
+            reload();
+        }
     }
 
     private void add1Euro() {
-        taxiDriveService.add1Euro();
-        reload();
+        try {
+            taxiDriveService.add1Euro();
+            reload();
+        } catch (TaxiDriveException e) {
+            Notification.show(e.getMessage());
+            reload();
+        }
     }
 
     private void add10Drives() {
-        taxiDriveService.add10Drives();
-        buttonRemoveAllDrives.setEnabled(true);
-        buttonRemoveAllNightDrives.setEnabled(true);
-        reload();
+        try {
+            taxiDriveService.add10Drives();
+            buttonRemoveAllDrives.setEnabled(true);
+            buttonRemoveAllNightDrives.setEnabled(true);
+            reload();
+        }
+        catch (TaxiDriveException e) {
+            Notification.show(e.getMessage());
+            reload();
+        }
     }
 
     private void removeAllDrives() {
-        taxiDriveService.removeAllDrives();
-        buttonRemoveAllDrives.setEnabled(false);
-        buttonRemoveAllNightDrives.setEnabled(false);
-        reload();
+        try {
+            taxiDriveService.removeAllDrives();
+            buttonRemoveAllDrives.setEnabled(false);
+            buttonRemoveAllNightDrives.setEnabled(false);
+            reload();
+        }
+        catch (TaxiDriveException e) {
+            Notification.show(e.getMessage());
+            reload();
+        }
     }
 
     private void reload() {

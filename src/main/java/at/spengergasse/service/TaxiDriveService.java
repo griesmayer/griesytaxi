@@ -104,6 +104,10 @@ public class TaxiDriveService {
         }
     }
 
+    public void addWrongDrive() {
+        taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 5),  "Mayer",      "Small",   -5.0, 1, false));
+    }
+
     /*
     public String toString() {
         return taxiDrives.stream()
