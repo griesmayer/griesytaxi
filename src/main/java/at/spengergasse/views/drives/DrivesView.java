@@ -6,10 +6,12 @@ import at.spengergasse.service.TaxiDriveService;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,6 +21,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
+import tools.jackson.databind.ser.std.DelegatingSerializer;
+
+import java.time.LocalDate;
 
 @PageTitle("Drives")
 @Route("drives")
@@ -29,7 +34,7 @@ public class DrivesView extends VerticalLayout {
     private final Button buttonAdd1Euro = new Button("Add 1 EUR");
     private final Button buttonRemoveAllNightDrives = new Button("Remove night drives");
     private final Button buttonAddWrong = new Button("Add WRONG");
-    private final Grid<TaxiDrive> grid = new Grid<>(TaxiDrive.class, true);
+    private final Grid<TaxiDrive> grid = new Grid<>(TaxiDrive.class, false);
     private final TaxiDriveService taxiDriveService;
 
     public DrivesView(@Autowired TaxiDriveService taxiDriveService) {
@@ -46,6 +51,50 @@ public class DrivesView extends VerticalLayout {
         buttonAddWrong.addClickListener(event -> addWrongDrive());
         add(new HorizontalLayout(buttonRemoveAllDrives, buttonAdd10Drives, buttonAdd1Euro, buttonRemoveAllNightDrives, buttonAddWrong));
 
+        grid.addColumn(drive -> drive.getTaxiDriveId())
+            .setHeader("Drive ID")
+            .setSortable(true);
+        grid.addColumn(drive -> drive.getTaxiDriveDate())
+            .setHeader("Drive Date")
+            .setSortable(true);
+        grid.addColumn(drive -> drive.getCustomerName())
+            .setHeader("Customer Name")
+            .setSortable(true);
+
+        Image l = new Image("icons/taxi.png", "Taxi logo");
+        l.setWidth("32px");
+        HorizontalLayout headerType = new HorizontalLayout(l, new Span("Type"));
+        grid.addColumn(drive -> drive.getTaxiType())
+            .setHeader(headerType)
+            .setSortable(true);
+
+        grid.addColumn(drive -> drive.getPrice())
+            .setHeader("Price EUR")
+            .setSortable(true);
+        grid.addColumn(drive -> drive.getNumberPassangers())
+            .setHeader("Passangers")
+            .setSortable(true);
+        grid.addColumn(drive -> drive.getNightDrive())
+            .setHeader("Night Drive")
+            .setSortable(true);
+        grid.addColumn(drive -> {
+                    if (drive.getNightDrive() == true)
+                            return "Night";
+                    else
+                        return "Day";
+                })
+            .setHeader("Drive Time")
+            .setSortable(true);
+        grid.addColumn(drive -> (drive.getNightDrive() == true)? "Night" : "Day")
+            .setHeader("Drive Time")
+            .setSortable(true);
+        grid.addComponentColumn(drive -> {
+                    Checkbox night = new Checkbox(drive.getNightDrive());
+                    night.setReadOnly(true);
+                    return night;
+                 })
+            .setHeader("Night drive")
+            .setSortable(true);
         add(grid);
         reload();
     }
