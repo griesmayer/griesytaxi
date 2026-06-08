@@ -1,6 +1,7 @@
 package at.spengergasse.service;
 
 import at.spengergasse.domain.TaxiDrive;
+import at.spengergasse.domain.TaxiDriveException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -106,6 +107,31 @@ public class TaxiDriveService {
 
     public void addWrongDrive() {
         taxiDrives.add(new TaxiDrive(LocalDate.of(2025, 1, 5),  "Mayer",      "Small",   -5.0, 1, false));
+    }
+
+    public void remove1Drive(Long taxiDriveId) {
+        /*TaxiDrive drive;
+
+        for (TaxiDrive t: taxiDrives) {
+            if (t.getTaxiDriveId().equals(taxiDriveId))
+                drive = t;
+        }
+        taxiDrives.remove(drive);*/
+        if (taxiDriveId == null)
+            throw new TaxiDriveException("Drive ID does not exist!");
+
+        if (taxiDrives.removeIf(t -> t.getTaxiDriveId().equals(taxiDriveId)) == false)
+            throw new TaxiDriveException("Drive ID does not exist!");
+    }
+
+    public void add1Passanger(Long taxiDriveId) {
+        if (taxiDriveId == null)
+            throw new TaxiDriveException("Drive ID does not exist!");
+
+        for (TaxiDrive d: taxiDrives) {
+            if (d.getTaxiDriveId().equals(taxiDriveId))
+                d.setNumberPassangers(d.getNumberPassangers()+1);
+        }
     }
 
     /*

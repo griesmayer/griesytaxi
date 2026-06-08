@@ -95,8 +95,45 @@ public class DrivesView extends VerticalLayout {
                  })
             .setHeader("Night drive")
             .setSortable(true);
+        grid.addComponentColumn(drive -> {
+                    Button delete = new Button("Delete");
+                    delete.addClickListener(e -> remove1Drive(drive.getTaxiDriveId()));
+                    return delete;
+        })
+            .setHeader("Action")
+            .setSortable(false);
+
+        grid.addComponentColumn(drive -> {
+                    Button add1Passanger = new Button("Add 1 Passanger");
+                    add1Passanger.addClickListener(e-> add1Passanger(drive.getTaxiDriveId()));
+                    return add1Passanger;
+        })
+            .setHeader("Action")
+            .setSortable(false);
+
+
         add(grid);
         reload();
+    }
+
+    private void add1Passanger(Long taxiDriveId) {
+        try {
+            taxiDriveService.add1Passanger(taxiDriveId);
+            reload();
+        }
+        catch (TaxiDriveException e) {
+            Notification.show(e.getMessage());
+        }
+    }
+
+    private void remove1Drive(Long taxiDriveId) {
+        try {
+            taxiDriveService.remove1Drive(taxiDriveId);
+            reload();
+        }
+        catch (TaxiDriveException e) {
+            Notification.show(e.getMessage());
+        }
     }
 
     private void addWrongDrive() {

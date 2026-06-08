@@ -2,6 +2,7 @@ package at.spengergasse.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -18,15 +19,29 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TaxiDrive {
     @Id
     private Long      taxiDriveId;
+    @NotNull(message = "Taxi drive date is required!")
+    @PastOrPresent(message = "Taxi drive only in the past or present!")
     private LocalDate taxiDriveDate;
+    @NotBlank(message = "Customer name date is required!")
+    @Size(min=3, max=100, message = "Wrong name!")
     private String    customerName;
+    @NotNull(message = "Taxi type is required!")
+    @Pattern(
+            regexp = "Small|Medium|Regular|VAN",
+            message = "Type must be Small, Medium,Regular or VAN"
+    )
     private String    taxiType;
+    @NotNull(message = "Price is required!")
+    @DecimalMin(value = "5.0", message = "Min 5 EUR!")
+    @DecimalMax(value = "50.0", message = "Max price 50 EUR!")
     private Double    price;
+    @NotNull(message = "Number of passangers is required!")
+    @Min(value = 1, message = "Min 1 passanger")
     private Integer   numberPassangers;
+    @NotNull(message = "Day time is required!")
     private Boolean   nightDrive;
 
     private static final AtomicLong sequence = new AtomicLong(1000);
-    private static final String[] taxiTypes = {"Small", "Medium", "Regular", "VAN"};
 
     public TaxiDrive() {
     }
@@ -64,8 +79,6 @@ public class TaxiDrive {
     }
 
     public void setTaxiTypes(String taxiType) {
-        if (! Arrays.asList(taxiTypes).contains(taxiType) )
-            throw new TaxiDriveException("Unkn taxi type!");
         this.taxiType = taxiType;
     }
 
