@@ -7,6 +7,9 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -15,10 +18,15 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 import tools.jackson.databind.ser.std.DelegatingSerializer;
@@ -34,6 +42,7 @@ public class DrivesView extends VerticalLayout {
     private final Button buttonAdd1Euro = new Button("Add 1 EUR");
     private final Button buttonRemoveAllNightDrives = new Button("Remove night drives");
     private final Button buttonAddWrong = new Button("Add WRONG");
+    private final Button buttonAdd1Drive = new Button("Add Drive");
     private final Grid<TaxiDrive> grid = new Grid<>(TaxiDrive.class, false);
     private final TaxiDriveService taxiDriveService;
 
@@ -49,7 +58,8 @@ public class DrivesView extends VerticalLayout {
         buttonAdd1Euro.addClickListener(event -> add1Euro());
         buttonRemoveAllNightDrives.addClickListener(event -> removeAllNightDrives());
         buttonAddWrong.addClickListener(event -> addWrongDrive());
-        add(new HorizontalLayout(buttonRemoveAllDrives, buttonAdd10Drives, buttonAdd1Euro, buttonRemoveAllNightDrives, buttonAddWrong));
+        buttonAdd1Drive.addClickListener(event -> add1Drive());
+        add(new HorizontalLayout(buttonRemoveAllDrives, buttonAdd10Drives, buttonAdd1Euro, buttonRemoveAllNightDrives, buttonAddWrong, buttonAdd1Drive));
 
         grid.addColumn(drive -> drive.getTaxiDriveId())
             .setHeader("Drive ID")
@@ -114,6 +124,77 @@ public class DrivesView extends VerticalLayout {
 
         add(grid);
         reload();
+    }
+
+    private void add1Drive() {
+        Dialog dialog;
+
+        dialog = new Dialog();
+        dialog.setHeaderTitle("Add 1 Taxi drive");
+
+        TextField  taxiDriveId = new TextField("Taxi Drive ID");
+        DatePicker taxiDriveDate = new DatePicker("Drive date");
+        TextField  customerName = new TextField("Customer name");
+        ComboBox   taxiType = new ComboBox("Taxi type");
+        taxiType.setItems("Small", "Medium", "Regular", "VAN");
+        NumberField price = new NumberField("Price");
+        IntegerField numberPassangers = new IntegerField("Number of passangers");
+        Checkbox nightDrive = new Checkbox("Night drive");
+
+        BeanValidationBinder<TaxiDrive> binder = new BeanValidationBinder<>(TaxiDrive.class);
+        binder.forField(taxiDriveDate)
+                .bind("taxiDriveDate");
+        binder.forField(customerName)
+                .bind("customerName");
+        binder.forField(taxiType)
+                .bind("taxiType");
+        binder.forField(price)
+                .bind("price");
+        binder.forField(numberPassangers)
+                .bind("numberPassangers");
+        binder.forField(nightDrive)
+                .bind("nightDrive");
+
+        TaxiDrive drive = new TaxiDrive();
+        binder.setBean(drive);
+
+        taxiDriveId.setValue(""+drive.getTaxiDriveId());
+        taxiDriveId.setReadOnly(true);
+
+        VerticalLayout formLaout = new VerticalLayout(
+                taxiDriveId,
+                taxiDriveDate,
+                customerName,
+                taxiType,
+                price,
+                numberPassangers,
+                nightDrive
+        );
+
+        Button buttonOK = new Button("OK");
+        Button buttonCancel = new Button("Cancel");
+
+        buttonOK.addClickListener(event -> {
+            try {
+                if (binder.validate().isOk() == true) {
+                    taxiDriveService.add1Drive(drive);
+                    dialog.close();
+                    reload();
+                    Notification.show("New drive added");
+                }
+                else {
+                    Notification.show("Check your input!");
+                }
+            }
+            catch (TaxiDriveException e) {
+                Notification.show(e.getMessage());
+            }
+        });
+        buttonCancel.addClickListener(event -> dialog.close());
+
+        dialog.add(formLaout);
+        dialog.getFooter().add(buttonOK, buttonCancel);
+        dialog.open();
     }
 
     private void add1Passanger(Long taxiDriveId) {

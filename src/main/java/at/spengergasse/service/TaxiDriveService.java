@@ -134,6 +134,12 @@ public class TaxiDriveService {
         }
     }
 
+    public void add1Drive(TaxiDrive drive) {
+        if (drive==null)
+            throw new TaxiDriveException("No drive!");
+        taxiDrives.add(drive);
+    }
+
     /*
     public String toString() {
         return taxiDrives.stream()

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Getter
@@ -44,6 +43,13 @@ public class TaxiDrive {
     private static final AtomicLong sequence = new AtomicLong(1000);
 
     public TaxiDrive() {
+        setTaxiDriveId();
+        setTaxiDriveDate (LocalDate.now());
+        setCustomerName ("UNKN");
+        setTaxiType ("Regular");
+        setPrice (10.0);
+        setNumberPassangers (1);
+        setNightDrive (false);
     }
 
     public TaxiDrive(LocalDate taxiDriveDate, String customerName, String taxiType, Double price, Integer numberPassangers, Boolean nightDrive) {
