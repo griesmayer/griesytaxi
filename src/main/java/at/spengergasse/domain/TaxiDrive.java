@@ -1,6 +1,8 @@
 package at.spengergasse.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -17,6 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Entity
 public class TaxiDrive {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long      taxiDriveId;
     @NotNull(message = "Taxi drive date is required!")
     @PastOrPresent(message = "Taxi drive only in the past or present!")
@@ -40,10 +43,7 @@ public class TaxiDrive {
     @NotNull(message = "Day time is required!")
     private Boolean   nightDrive;
 
-    private static final AtomicLong sequence = new AtomicLong(1000);
-
     public TaxiDrive() {
-        setTaxiDriveId();
         setTaxiDriveDate (LocalDate.now());
         setCustomerName ("UNKN");
         setTaxiType ("Regular");
@@ -53,7 +53,6 @@ public class TaxiDrive {
     }
 
     public TaxiDrive(LocalDate taxiDriveDate, String customerName, String taxiType, Double price, Integer numberPassangers, Boolean nightDrive) {
-        setTaxiDriveId();
         setTaxiDriveDate (taxiDriveDate);
         setCustomerName (customerName);
         setTaxiType (taxiType);
@@ -70,10 +69,6 @@ public class TaxiDrive {
         setPrice (price);
         setNumberPassangers (numberPassangers);
         setNightDrive (nightDrive);
-    }
-
-    public void setTaxiDriveId() {
-        taxiDriveId = sequence.getAndIncrement();
     }
 
     public void setPrice(Double price) {

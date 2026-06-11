@@ -58,7 +58,7 @@ public class DrivesView extends VerticalLayout {
         buttonAdd1Euro.addClickListener(event -> add1Euro());
         buttonRemoveAllNightDrives.addClickListener(event -> removeAllNightDrives());
         buttonAddWrong.addClickListener(event -> addWrongDrive());
-        buttonAdd1Drive.addClickListener(event -> add1Drive());
+        buttonAdd1Drive.addClickListener(event -> addEditDrive(null));
         add(new HorizontalLayout(buttonRemoveAllDrives, buttonAdd10Drives, buttonAdd1Euro, buttonRemoveAllNightDrives, buttonAddWrong, buttonAdd1Drive));
 
         grid.addColumn(drive -> drive.getTaxiDriveId())
@@ -121,16 +121,32 @@ public class DrivesView extends VerticalLayout {
             .setHeader("Action")
             .setSortable(false);
 
+        grid.addComponentColumn(drive -> {
+                    Button editDrive = new Button("Edit");
+                    editDrive.addClickListener(e -> addEditDrive(drive));
+                    return editDrive;
+        })
+            .setHeader("Action")
+            .setSortable(false);
 
         add(grid);
         reload();
     }
 
-    private void add1Drive() {
+    private void addEditDrive(TaxiDrive existingDrive) {
         Dialog dialog;
+        TaxiDrive drive;
 
         dialog = new Dialog();
-        dialog.setHeaderTitle("Add 1 Taxi drive");
+
+        if (existingDrive == null) {
+            dialog.setHeaderTitle("Add 1 Taxi drive");
+            drive = new TaxiDrive();
+        }
+        else {
+            dialog.setHeaderTitle("Edit Taxi drive");
+            drive = existingDrive;
+        }
 
         TextField  taxiDriveId = new TextField("Taxi Drive ID");
         DatePicker taxiDriveDate = new DatePicker("Drive date");
@@ -155,7 +171,6 @@ public class DrivesView extends VerticalLayout {
         binder.forField(nightDrive)
                 .bind("nightDrive");
 
-        TaxiDrive drive = new TaxiDrive();
         binder.setBean(drive);
 
         taxiDriveId.setValue(""+drive.getTaxiDriveId());
@@ -180,7 +195,10 @@ public class DrivesView extends VerticalLayout {
                     taxiDriveService.add1Drive(drive);
                     dialog.close();
                     reload();
-                    Notification.show("New drive added");
+                    if (existingDrive == null)
+                        Notification.show("New drive added");
+                    else
+                        Notification.show("Drive modified");
                 }
                 else {
                     Notification.show("Check your input!");
